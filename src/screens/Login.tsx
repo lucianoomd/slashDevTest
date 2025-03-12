@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useState} from 'react';
 import {
   StyleSheet,
@@ -12,6 +11,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Screens from '../Router/Screens';
+import auth from '@react-native-firebase/auth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,13 +19,27 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const {reset} = useNavigation();
 
-  const handleLogin = useCallback(() => {
-    if (email === 'admin' && password === '123') {
-      reset({index: 0, routes: [{name: Screens.Home}]});
-    } else {
-      Alert.alert('Error', 'Invalid email or password');
+  const handleLogin = useCallback(async () => {
+    try {
+      const user = await auth().signInWithEmailAndPassword(email, password);
+      if (user) {
+        console.log('User:', user);
+        reset({index: 0, routes: [{name: Screens.Home}]});
+      }
+    } catch (error) {
+      if (error.code === 'auth/invalid-email') {
+        Alert.alert('Error', 'That email address is invalid!');
+      }
+      if (error.code === 'auth/invalid-credential') {
+        Alert.alert(
+          'Error',
+          'The supplied auth credential is incorrect, malformed or has expired.',
+        );
+      } else {
+        Alert.alert('Error', String(error));
+      }
     }
-  }, [email, password]);
+  }, [email, password, reset]);
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 

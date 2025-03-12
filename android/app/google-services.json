@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "77195490088",
+    "project_id": "slashdevtest-42610",
+    "storage_bucket": "slashdevtest-42610.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77195490088:android:28bf62f985e92b8e8c561d",
+        "android_client_info": {
+          "package_name": "com.slashdevtest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0VwgODYZLZ1PxttSFDcdsNQ86VWYvA28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
