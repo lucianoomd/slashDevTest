@@ -21,7 +21,10 @@ const Login = () => {
 
   const handleLogin = useCallback(async () => {
     try {
-      const user = await auth().signInWithEmailAndPassword(email, password);
+      const user = await auth().signInWithEmailAndPassword(
+        email.toLowerCase(),
+        password,
+      );
       if (user) {
         console.log('User:', user);
         reset({index: 0, routes: [{name: Screens.Home}]});
