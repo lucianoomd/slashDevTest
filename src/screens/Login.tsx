@@ -30,10 +30,10 @@ const Login = () => {
         reset({index: 0, routes: [{name: Screens.Home}]});
       }
     } catch (error) {
+      console.log('Error:', error.code);
       if (error.code === 'auth/invalid-email') {
         Alert.alert('Error', 'That email address is invalid!');
-      }
-      if (error.code === 'auth/invalid-credential') {
+      } else if (error.code === 'auth/invalid-credential') {
         Alert.alert(
           'Error',
           'The supplied auth credential is incorrect, malformed or has expired.',
