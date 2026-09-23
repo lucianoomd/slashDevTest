@@ -1,10 +1,11 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../screens/Login';
 import Home from '../screens/Home';
-import Screens from './Screens';
+import { SCREENS } from './screens';
 import Details from '../screens/Details';
+import { getNameParam } from './utils';
 
 const Stack = createStackNavigator();
 
@@ -12,20 +13,20 @@ function RootStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name={Screens.Login}
+        name={SCREENS.Login}
         component={Login}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name={Screens.Home}
+        name={SCREENS.Home}
         component={Home}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name={Screens.Details}
+        name={SCREENS.Details}
         component={Details}
         options={({route}) => ({
-          title: `Details: ${route.params.name}`,
+          title: `Details: ${getNameParam(route.params)}`,
         })}
       />
     </Stack.Navigator>

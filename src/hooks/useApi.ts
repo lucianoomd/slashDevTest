@@ -1,79 +1,49 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
+import { Character } from '../types/Types';
+import { fetchCharacters, fetchItemDetails } from '../api';
 
 const useApi = () => {
-  const [characters, setCharacters] = useState([]);
+  const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
+  const [error, setError] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const baseUrl = 'https://rickandmortyapi.com/api';
-
-  const fetchCharacters = async (pageNum = 1) => {
+  const getCharacters = useCallback(async (page: number) => {
     setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`${baseUrl}/character?page=${pageNum}`);
-
-      if (!response.ok) {
-        throw new Error(`Error fetching character: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      setCharacters(prev =>
-        pageNum === 1 ? data.results : [...prev, ...data.results],
-      );
-
-      // Check if there are more pages
-      setHasMore(data.info.next !== null);
-
-      return data;
-    } catch (err) {
-      setError(err.message);
-      return null;
-    } finally {
-      setLoading(false);
+    setError('');
+    const response = await fetchCharacters(page);
+    setLoading(false);
+    if(response.error) {
+      setError(response.error);
+    } else {
+      setCharacters(prev => pageNumber === 1 ? response.data : [...prev, ...response.data]);
+      setHasMore(response.hasMore);
     }
-  };
+  }, [pageNumber]);
 
-  // Load more data (pagination)
   const loadMore = () => {
     if (loading || !hasMore) {
       return;
     }
-    setPage(prev => prev + 1);
+    setPageNumber(prev => prev + 1);
   };
 
-  // Get single item details
-  const getItemDetails = async (id: number) => {
+  const getCharacterDetails = async (id: number) => {
     setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`${baseUrl}/character/${id}`);
-
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching characters details: ${response.status}`,
-        );
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      setError(err.message);
-      return null;
-    } finally {
-      setLoading(false);
+    setError('');
+    const response = await fetchItemDetails(id);
+    setLoading(false);
+    if(response.error) {
+      setError(response.error);
+    } else {
+      return response.data;
     }
   };
 
-  // Fetch initial data when component mounts or page changes
   useEffect(() => {
-    fetchCharacters(page);
-  }, [page]);
+    getCharacters(pageNumber);
+  }, [getCharacters, pageNumber]);
 
   return {
     characters,
@@ -81,7 +51,7 @@ const useApi = () => {
     error,
     hasMore,
     loadMore,
-    getItemDetails,
+    getCharacterDetails,
   };
 };
 
