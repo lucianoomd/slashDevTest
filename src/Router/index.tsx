@@ -7,6 +7,11 @@ import { SCREENS } from './screens';
 import Details from '../screens/Details';
 import { getNameParam } from './utils';
 
+export type RootStackParamList = {
+  Home: { name: string };
+  Details: { characterId: number; name: string };
+};
+
 const Stack = createStackNavigator();
 
 function RootStack() {

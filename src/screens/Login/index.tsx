@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,42 +9,37 @@ import {
   Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import { SCREENS } from '../../Router/screens';
-import auth from '@react-native-firebase/auth';
-import { getErrorCode } from '../../api/utils';
 import { styles } from './styles';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../Router';
+import useFirebaseAuth from '../../hooks/useFirebaseAuth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const {reset} = useNavigation();
+  const {reset} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const {user, error, doAuthenticate} = useFirebaseAuth(email, password);
 
-  const handleLogin = useCallback(async () => {
-    try {
-      const user = await auth().signInWithEmailAndPassword(
-        email.toLowerCase(),
-        password,
-      );
-      if (user) {
-        console.log('User:', user);
-        reset({index: 0, routes: [{name: SCREENS.Home}]});
-      }
-    } catch (error) {
-      const errorCode = getErrorCode(error);
-      console.log('Error:', errorCode);
-      if (errorCode === 'auth/invalid-email') {
-        Alert.alert('Error', 'That email address is invalid!');
-      } else if (errorCode === 'auth/invalid-credential') {
-        Alert.alert(
-          'Error',
-          'The supplied auth credential is incorrect, malformed or has expired.',
-        );
-      } else {
-        Alert.alert('Error', String(error));
-      }
+  const resetNavigationToHome = useCallback(() => {
+    reset({index: 0, routes: [{name: 'Home'}]});
+  }, [reset]);
+
+  const handleLogin = async () => {
+    doAuthenticate();
+  };
+
+  useEffect(() => {
+    if(error){
+      Alert.alert('Error', error);
     }
-  }, [email, password, reset]);
+  }, [error]);
+
+  useEffect(() => {
+    if(user) {
+      resetNavigationToHome();
+    }
+  }, [user, resetNavigationToHome]);
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 

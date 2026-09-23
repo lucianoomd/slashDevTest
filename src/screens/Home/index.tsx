@@ -6,14 +6,14 @@ import {
   ActivityIndicator,
   SafeAreaView,
 } from 'react-native';
-import useApi from '../../hooks/useApi';
+import useCharactersApi from '../../hooks/useCharactersApi';
 import Header from '../../components/Header';
-import {Character} from '../../types/Types';
+import {Character} from '../../types/types';
 import { styles } from './styles';
 import CharacterCard from '../../components/CharacterCard';
 
 const Home = () => {
-  const {characters, loading, error, hasMore, loadMore} = useApi();
+  const {characters, loading, error, hasMore, loadMore} = useCharactersApi();
 
   const renderCharacterItem = ({item}: {item: Character}) => (
     <CharacterCard {...item}  />

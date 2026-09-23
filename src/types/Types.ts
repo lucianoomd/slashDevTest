@@ -1,4 +1,6 @@
-export interface Response {
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
+
+export interface ResponseCharactersAPI {
     info:    Info;
     results: Character[];
 }
@@ -38,5 +40,10 @@ export interface FetchCharactersResponse {
 
 export interface FetchItemDetailsResponse {
     data: Character | null,
+    error: string
+}
+
+export interface AuthenticateResponse {
+    user: FirebaseAuthTypes.UserCredential | null,
     error: string
 }

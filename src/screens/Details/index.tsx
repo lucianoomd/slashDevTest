@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -7,33 +6,15 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import useAPI from '../../hooks/useApi';
-import {Character} from '../../types/Types';
 import { styles } from './styles';
-import { useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../../Router';
+import useCharacterDetailsApi from '../../hooks/useCharacterDetailsApi';
 
 const Details = () => {
-  const route = useRoute();
+  const route = useRoute<RouteProp<RootStackParamList, 'Details'>>();
   const {characterId} = route.params;
-  const {getCharacterDetails} = useAPI();
-  const [character, setCharacter] = useState<Character | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchCharacterDetails = async () => {
-      try {
-        const characterData = await getCharacterDetails(characterId);
-        setCharacter(characterData);
-      } catch (err) {
-        setError(String(err.message));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCharacterDetails();
-  }, []);
+  const {loading, error, character} = useCharacterDetailsApi(characterId);
 
   if (loading) {
     return (

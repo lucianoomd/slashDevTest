@@ -1,8 +1,8 @@
 import {useState, useEffect, useCallback} from 'react';
-import { Character } from '../types/Types';
-import { fetchCharacters, fetchItemDetails } from '../api';
+import { Character } from '../types/types';
+import { fetchCharacters } from '../api';
 
-const useApi = () => {
+const useCharactersApi = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -29,18 +29,6 @@ const useApi = () => {
     setPageNumber(prev => prev + 1);
   };
 
-  const getCharacterDetails = async (id: number) => {
-    setLoading(true);
-    setError('');
-    const response = await fetchItemDetails(id);
-    setLoading(false);
-    if(response.error) {
-      setError(response.error);
-    } else {
-      return response.data;
-    }
-  };
-
   useEffect(() => {
     getCharacters(pageNumber);
   }, [getCharacters, pageNumber]);
@@ -51,8 +39,7 @@ const useApi = () => {
     error,
     hasMore,
     loadMore,
-    getCharacterDetails,
   };
 };
 
-export default useApi;
+export default useCharactersApi;

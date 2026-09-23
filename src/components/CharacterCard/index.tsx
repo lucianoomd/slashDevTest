@@ -1,16 +1,17 @@
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { Character } from '../../types/Types';
+import { Character } from '../../types/types';
 import { useNavigation } from '@react-navigation/native';
-import { SCREENS } from '../../Router/screens';
 import { styles } from './styles';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../Router';
 
 
 
 const CharacterCard = ({id, name, image, status, species, location}: Character) => {
-    const {navigate} = useNavigation();
+    const {navigate} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     const navigateToDetails = () => {
-        navigate(SCREENS.Details, {characterId: id, name});
+        navigate('Details', {characterId: id, name});
     };
 
     return (

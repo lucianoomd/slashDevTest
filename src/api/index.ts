@@ -1,4 +1,4 @@
-import { FetchCharactersResponse, FetchItemDetailsResponse } from '../types/Types';
+import { Character, FetchCharactersResponse, FetchItemDetailsResponse, ResponseCharactersAPI } from '../types/types';
 import { getErrorMessage } from './utils';
 
 const baseUrl = 'https://rickandmortyapi.com/api';
@@ -13,7 +13,7 @@ const fetchCharacters = async (pageNum = 1): Promise<FetchCharactersResponse> =>
             throw new Error(`Error fetching character: ${result.status}`);
         }
 
-        const data = await result.json();
+        const data: ResponseCharactersAPI = await result.json();
 
         response.data = data.results;
 
@@ -36,7 +36,7 @@ const fetchItemDetails = async (id: number): Promise<FetchItemDetailsResponse> =
         );
       }
 
-      const data = await result.json();
+      const data: Character = await result.json();
 
       response.data = data;
     } catch (err) {
